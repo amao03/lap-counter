@@ -51,6 +51,9 @@ else:
 # initialize the FPS throughput estimator
 fps = None
 
+lapCounter = 0
+left = False
+prevX = 0
 
 while True:
 	# grab the current frame, then handle if we are using a
@@ -74,6 +77,15 @@ while True:
 			(x, y, w, h) = [int(v) for v in box]
 			cv2.rectangle(frame, (x, y), (x + w, y + h),
 				(0, 255, 0), 2)
+			if left and x > prevX:
+				lapCounter += 1
+				left = False
+				print(x)
+			elif not left and x < prevX:
+				lapCounter += 1
+				left = True
+				print(x)
+			prevX = x
 		# update the FPS counter
 		fps.update()
 		fps.stop()
@@ -83,6 +95,7 @@ while True:
 			("Tracker", args["tracker"]),
 			("Success", "Yes" if success else "No"),
 			("FPS", "{:.2f}".format(fps.fps())),
+			("Laps", lapCounter)
 		]
 		# loop over the info tuples and draw them on our frame
 		for (i, (k, v)) in enumerate(info):
