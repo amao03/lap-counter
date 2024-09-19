@@ -31,8 +31,8 @@ else:
 time.sleep(2.0)
 
 lapCounter = 0
-left = False
-prevX = 0
+left = None
+prevX = None
 
 # keep looping
 while True:
@@ -80,14 +80,22 @@ while True:
                 (0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
             
-            if left and y < prevX and y > 215:
+            # we start with left and prevX as none in order to determine the initial direction
+            if left is None and prevX is None:
+                prevX = x
+            elif left is None and x < prevX:
+                left = True
+            elif left is None:
+                left = False
+            elif left and x > prevX:
                 lapCounter += 1
                 left = False
-            elif not left and y > prevX and y < 20:
+            elif not left and x < prevX:
                 lapCounter += 1
                 left = True
-            prevX = y
-            print(y)
+            
+            prevX = x
+
 
     cv2.putText(frame, str(lapCounter), (10, 300),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
