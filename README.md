@@ -27,5 +27,8 @@ We will ask others to record swimming videos and we will verify that the lap cou
   <li>12/2- 12/6: Work on Final Presentation and Present</li>
 </ul>
 
+## Semester plan
+Listed in GitHub issues
+
 ## How it will be shared
 We will share it over Github and hopefully have a shareable interface.
