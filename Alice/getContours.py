@@ -38,8 +38,12 @@ else:
 # allow the camera or video file to warm up
 time.sleep(2.0)
 # keep looping
+
+firstLoop = False
+firstFrame = None
 while True:
     # grab the current frame
+
     frame = vs.read()
     # handle the frame from VideoCapture or VideoStream
     frame = frame[1] if args.get("video", False) else frame
@@ -47,9 +51,16 @@ while True:
     # then we have reached the end of the video
     if frame is None:
         break
+
     # resize the frame, blur it, and convert it to the HSV
     # color space
     frame = imutils.resize(frame, width=600)
+
+    if not firstLoop:
+        firstLoop = True
+        firstFrame = frame
+
+    frame = cv2.absdiff(frame,firstFrame)
 
 
     # image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV) 
@@ -69,7 +80,7 @@ while True:
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
     # hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    hsv[:, :, 0] = hsv[:, :, 0] * 0.8
+    hsv[:, :, 0] = hsv[:, :, 0] * 0.3
     frame = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 
     # construct a mask for the color "green", then perform

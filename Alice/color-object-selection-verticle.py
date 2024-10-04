@@ -19,6 +19,8 @@ args = vars(ap.parse_args())
 # list of tracked points
 greenLower = (10, 100, 20)
 greenUpper = (25,255,255)
+
+
 pts = deque(maxlen=args["buffer"])
 # if a video path was not supplied, grab the reference
 # to the webcam
