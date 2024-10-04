@@ -29,7 +29,7 @@ Start of: Reading input video
 """
 #NOTE:
 # Defining 'VideoCapture' object and reading video from a file make sure that the path and file name is correct
-video = cv2.VideoCapture('swim-horizontal-short.mp4')
+video = cv2.VideoCapture('../videos/swim-horizontal-short.mp4')
 
 # Preparing variable for writer that we will use to write processed frames
 writer = None
