@@ -3,25 +3,25 @@ from collections import deque
 from imutils.video import VideoStream
 import numpy as np
 import argparse
-import cv2 # type: ignore
+import cv2
 import imutils
 import time
 
-from moviepy.editor import VideoFileClip, ColorClip, CompositeVideoClip
-import moviepy.video.fx.all as vfx
+from warmer import *
+
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-vert", "--vertical", default=1, nargs='?',
     help="video orientation")
 ap.add_argument("-v", "--video",
     help="path to the (optional) video file")
-
+ap.add_argument("-w", "--warmer", default=1, nargs='?',
+    help="make video warmer")
 ap.add_argument("-b", "--buffer", type=int, default=32,
     help="max buffer size")
 args = vars(ap.parse_args())
 
-# define the lower and upper boundaries of the "green"
-# ball in the HSV color space
+
 greenLower = (5, 163, 53)
 greenUpper = (14,255,255)
 
@@ -41,15 +41,19 @@ if not args.get("video", False):
     vs = VideoStream(src=0).start()
 # otherwise, grab a reference to the video file
 else:
-    vs = cv2.VideoCapture(args["video"])
+    if not args["warmer"]:
+        filter_video = warm_video(args["video"]+".mp4", (args["video"]+"-warmer.mp4"), 30)
+        print("done watmer")
+        vs = cv2.VideoCapture(args["video"]+"-warmer.mp4")
+        print("captured")
+    else: 
+        vs = cv2.VideoCapture(args["video"]+".mp4")
+        
 
 time.sleep(2.0)
-print(args["vertical"])
 while True:
     frame = vs.read()
     frame = frame[1] if args.get("video", False) else frame
-    
-    frame = cv2.normalize(frame, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
 
     if frame is None:
         break
