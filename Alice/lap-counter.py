@@ -39,6 +39,7 @@ laps = 0
 
 if not args.get("video", False):
     vs = VideoStream(src=0).start()
+    
 # otherwise, grab a reference to the video file
 else:
     if not args["warmer"]:
