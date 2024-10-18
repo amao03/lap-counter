@@ -70,8 +70,9 @@ def getHSV(image):
         success = input("is this selection good (y/n)?")
         if success == "y":
             isHSVSelected = True
+            return hsv_min, hsv_max
 
-    return hsv_min, hsv_max
+   
 
 def cropVideo(video, image, videoPath):
     x, y, w, h = getCoordinatesByUser(image)
