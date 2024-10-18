@@ -27,7 +27,8 @@ model.setInputScale(1.0/127.5)
 model.setInputMean((127.5,127.5,127.5))
 model.setInputSwapRB(True)
 
-video = cv2.VideoCapture('../videos/horizontal-butterfly.mov')
+# video = cv2.VideoCapture('../videos/horizontal-butterfly.mov')
+video = cv2.VideoCapture('../videos/swim-horizontal-short.mp4')
 
 # get total number of frames
 totalFrames = video.get(cv2.CAP_PROP_FRAME_COUNT)
@@ -44,7 +45,7 @@ plt.imshow(image)
 #converting image from BGR to RGB
 plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 
-cv2.imwrite('results/random-frame.jpg', image)
+cv2.imwrite('results/swim-horizontal-frame.jpg', image)
 
 #object detection
 ClassIndex, confidence, bbox = model.detect(image, confThreshold=0.5)
