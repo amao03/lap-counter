@@ -41,11 +41,13 @@ def getCoordinatesByUser(image):
 
 x = 0
 y = 0 
+lowerLimit = []
+upperLimit = []
 def getHSVByUser(image):
-    cv2.imshow('image', image) 
+    cv2.imshow('image', image)
     cv2.setMouseCallback('image', click_event)
     cv2.waitKey(0) 
-
+    print('coor: ', x, ' ', y) 
     return get_hsv_value(image, x, y)
 
 
@@ -55,8 +57,7 @@ def get_hsv_value(image, x, y):
 
     lowerLimit = int(hsv_value[0]) - 10, 100, 100
     upperLimit = int(hsv_value[0]) + 10, 255, 255
-    print(hsv_image)
-    
+
     print("HSV value at pixel ({}, {}): {}".format(x, y, hsv_value))
     print(lowerLimit)
     print(upperLimit)
@@ -66,18 +67,14 @@ def get_hsv_value(image, x, y):
 
 # function to display the coordinates of 
 # of the points clicked on the image  
-def click_event(event, x, y, img, params): 
-
+def click_event(event, clickx, clicky, img, params): 
+    global x
+    global y
     # checking for left mouse clicks 
     if event == cv2.EVENT_LBUTTONDOWN: 
-  
-        # displaying the coordinates 
-        # on the Shell 
-        print(x, ' ', y) 
-        print(img)
-
-        x = x
-        y = y
+        print(clickx, ' ', clicky) 
+        x = clickx
+        y = clicky
   
 
 def cropVideo(video, image, videoPath):
