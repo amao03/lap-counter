@@ -45,8 +45,10 @@ if not args.get("video", False):
 
 moviePyVideo = VideoFileClip(args["video"]+".mp4")
 cv2Video = cv2.VideoCapture(args["video"]+".mp4")
-randomFrame = getRandomFrame(cv2Video)
-cropVideo(moviePyVideo, randomFrame, args["video"])
+
+randomFrame = getGoodRandomFrame(cv2Video, "Is this image good for cropping?")
+
+# cropVideo(moviePyVideo, randomFrame, args["video"])
 # now video is args["video"]-cropped
 
 if not args["warmer"]:
@@ -57,9 +59,11 @@ if not args["warmer"]:
 else: 
     vs = cv2.VideoCapture(args["video"]+"-cropped.mp4")
 
-# now do HSV selection from random frame
-randomFilteredFrame = getRandomFrame(vs)
+
+randomFilteredFrame = getGoodRandomFrame(vs, "Can you see the cap well?")
+
 greenLower, greenUpper = getHSV(randomFilteredFrame)
+print(greenLower, greenUpper)
         
 
 time.sleep(2.0)
@@ -85,7 +89,6 @@ while True:
 
     # only proceed if at least one contour was found
     if len(cnts) > 0:
-        print("found contour")
         c = max(cnts, key=cv2.contourArea)
         ((x, y), radius) = cv2.minEnclosingCircle(c)
         M = cv2.moments(c)
@@ -100,7 +103,6 @@ while True:
        
 # loop over the set of tracked points
     for i in np.arange(1, len(pts)):
-        print("loop tracked points")
 
         if len(pts) < 11:
             continue
@@ -136,7 +138,6 @@ while True:
         
     # show the frame to our screen and increment the frame counter
     cv2.imshow("Frame", frame)
-    print("show frame")
     key = cv2.waitKey(1) & 0xFF
     counter += 1
     # if the 'q' key is pressed, stop the loop
