@@ -25,8 +25,8 @@ ap.add_argument("-b", "--buffer", type=int, default=32,
 args = vars(ap.parse_args())
 
 
-greenLower = (5, 163, 53)
-greenUpper = (14,255,255)
+greenLower = (2, 100, 100)
+greenUpper = (22,255,255)
 
 # greenLower = (10, 100, 20)
 # greenUpper = (25,255,255)
@@ -57,12 +57,12 @@ if not args["warmer"]:
     vs = cv2.VideoCapture(args["video"]+"-cropped-warmer.mp4")
     print("captured")
 else: 
-    vs = cv2.VideoCapture(args["video"]+"-cropped.mp4")
+    vs = cv2.VideoCapture(args["video"]+".mp4")
 
 
 randomFilteredFrame = getGoodRandomFrame(vs, "Can you see the cap well?")
 
-greenLower, greenUpper = getHSV(randomFilteredFrame)
+greenLower, greenUpper = getHSVByUser(randomFilteredFrame)
 print(greenLower, greenUpper)
         
 

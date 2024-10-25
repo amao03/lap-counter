@@ -20,7 +20,7 @@ def singleRandomFrame(video):
   # get total number of frames
   totalFrames = video.get(cv2.CAP_PROP_FRAME_COUNT)
   print(totalFrames)
-  randomFrameNumber = random.randint(0, totalFrames - 1)
+  randomFrameNumber = random.randint(0, int(totalFrames) - 1)
 
   # set frame position
   video.set(cv2.CAP_PROP_POS_FRAMES, randomFrameNumber)

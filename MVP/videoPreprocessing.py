@@ -39,40 +39,46 @@ def getCoordinatesByUser(image):
 
     return int(poolSelection[0]), int(poolSelection[1]), int(poolSelection[2]), int(poolSelection[3])
 
+x = 0
+y = 0 
 def getHSVByUser(image):
-    capSelection = cv2.selectROI("Frame", image, fromCenter=False,
-			showCrosshair=True)
+    cv2.imshow('image', image) 
+    cv2.setMouseCallback('image', click_event)
+    cv2.waitKey(0) 
+
+    return get_hsv_value(image, x, y)
+
+
+def get_hsv_value(image, x, y):
+    hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    hsv_value = hsv_image[y, x]
+
+    lowerLimit = int(hsv_value[0]) - 10, 100, 100
+    upperLimit = int(hsv_value[0]) + 10, 255, 255
+    print(hsv_image)
     
-    x,y,w,h = int(capSelection[0]), int(capSelection[1]), int(capSelection[2]), int(capSelection[3])
-    roi = image[y:y+h, x:x+w]
-    hsv_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
-    h_min, s_min, v_min = np.percentile(hsv_roi,10, axis=(0, 1))
-    h_max, s_max, v_max = np.percentile(hsv_roi, 90, axis=(0, 1))
-
-    # Lower and upper HSV bounds
-    lower_bound = np.array([h_min, s_min, v_min])
-    upper_bound = np.array([h_max, s_max, v_max])
-
-    return lower_bound, upper_bound
+    print("HSV value at pixel ({}, {}): {}".format(x, y, hsv_value))
+    print(lowerLimit)
+    print(upperLimit)
+    
+    return lowerLimit, upperLimit
 
 
-def getHSV(image):
-    isHSVSelected = False
-    while not isHSVSelected:  
-        height, width = image.shape[:2]
-        # resized_image = cv2.resize(image, (int(width * 3), int(height * 3)),  interpolation=cv2.INTER_CUBIC)
-        hsv_min, hsv_max = getHSVByUser(image)
-        print(hsv_min, hsv_max)
-        hsv_selection = cv2.inRange(image, hsv_min, hsv_max)
-        cv2.imshow("cap selection", hsv_selection)
-        cv2.waitKey(1)
+# function to display the coordinates of 
+# of the points clicked on the image  
+def click_event(event, x, y, img, params): 
 
-        success = input("is this selection good (y/n)?")
-        if success == "y":
-            isHSVSelected = True
-            return hsv_min, hsv_max
+    # checking for left mouse clicks 
+    if event == cv2.EVENT_LBUTTONDOWN: 
+  
+        # displaying the coordinates 
+        # on the Shell 
+        print(x, ' ', y) 
+        print(img)
 
-   
+        x = x
+        y = y
+  
 
 def cropVideo(video, image, videoPath):
     x, y, w, h = getCoordinatesByUser(image)
