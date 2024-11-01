@@ -17,7 +17,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("-vert", "--vertical", default=1, nargs='?',
     help="video orientation")
 ap.add_argument("-v", "--video",
-    help="path to the (optional) video file")
+    help="path to the video file")
 ap.add_argument("-w", "--warmer", default=1, nargs='?',
     help="make video warmer")
 ap.add_argument("-b", "--buffer", type=int, default=32,
@@ -43,28 +43,30 @@ laps = 0
 if not args.get("video", False):
     exit()
 
-moviePyVideo = VideoFileClip(args["video"]+".mp4")
-cv2Video = cv2.VideoCapture(args["video"]+".mp4")
+videoName = args["video"]
+moviePyVideo = VideoFileClip(videoName+".mp4")
+cv2Video = cv2.VideoCapture(videoName+".mp4")
 
 randomFrame = getGoodRandomFrame(cv2Video, "Is this image good for cropping?")
 
-# cropVideo(moviePyVideo, randomFrame, args["video"])
+cropVideo(moviePyVideo, randomFrame, videoName)
+videoName = videoName + "-cropped"
 # now video is args["video"]-cropped
 
 if not args["warmer"]:
-    filter_video = warm_video(args["video"]+"-cropped.mp4", (args["video"]+"-cropped-warmer.mp4"), 30)
+    filter_video = warm_video(videoName+".mp4", (videoName+"-warmer.mp4"), 30)
     print("done watmer")
-    vs = cv2.VideoCapture(args["video"]+"-cropped-warmer.mp4")
+    videoName = videoName + "-warmer"
     print("captured")
-else: 
-    vs = cv2.VideoCapture(args["video"]+".mp4")
 
+vs = cv2.VideoCapture(videoName+".mp4")
 
 randomFilteredFrame = getGoodRandomFrame(vs, "Can you see the cap well?")
 
 greenLower, greenUpper = getHSVByUser(randomFilteredFrame)
 print(greenLower, greenUpper)
-        
+
+vs = cv2.VideoCapture(videoName+".mp4")
 
 time.sleep(2.0)
 while True:
