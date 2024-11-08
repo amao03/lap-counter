@@ -91,26 +91,3 @@ def cropVideo(video, image, videoPath):
 
     cropped_clip = video.crop(x1=croppedX, y1=croppedY, x2=croppedX + croppedWidth, y2=croppedY + croppedHeight)
     cropped_clip.write_videofile(videoPath + '-cropped.mp4')
-
-# image = cv2.imread('results/swim-horizontal-frame.jpg')
-# x, y, w, h = getCoordinatesByUser(image)
-
-
-# video = VideoFileClip('../videos/horizontal-butterfly.mov')
-# video = VideoFileClip('../videos/cropped-swim-horizontal.mp4')
-# vidWidth, vidHeight = video.size
-# print(w, h)
-# print(image.shape)
-# imageHeight, imageWidth, _ = image.shape
-
-# convert image coordinates to video
-# croppedY = y * vidHeight / imageHeight
-# croppedHeight = h * vidHeight / imageHeight
-# croppedX = x * vidWidth / imageWidth
-# croppedWidth = w * vidWidth / imageWidth
-
-# cropped_clip = video.crop(x1=croppedX, y1=croppedY, x2=croppedX + croppedWidth, y2=croppedY + croppedHeight)
-# cropped_clip.write_videofile('cropped-video-above-im.mp4')
-
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
