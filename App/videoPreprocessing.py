@@ -91,3 +91,18 @@ def cropVideo(video, image, videoPath):
 
     cropped_clip = video.crop(x1=croppedX, y1=croppedY, x2=croppedX + croppedWidth, y2=croppedY + croppedHeight)
     cropped_clip.write_videofile(videoPath + '-cropped.mp4')
+
+
+def cropVideoFromPyQt(x, y, w, h, mainWindow, imageWidth, imageHeight):
+    video = VideoFileClip(mainWindow.fileName+".mp4")
+
+    vidWidth, vidHeight = video.size
+
+    # convert image coordinates to video
+    croppedY = (y+0.5) * vidHeight / imageHeight
+    croppedHeight = h * vidHeight / imageHeight
+    croppedX = (x+0.5) * vidWidth / imageWidth
+    croppedWidth = w * vidWidth / imageWidth
+
+    cropped_clip = video.crop(x1=croppedX, y1=croppedY, x2=croppedX + croppedWidth, y2=croppedY + croppedHeight)
+    cropped_clip.write_videofile(mainWindow.fileName + '-cropped.mp4')

@@ -19,9 +19,9 @@ buffer = 32
 def getCroppingFrame(video, mainWindow):
     cv2Video = cv2.VideoCapture(video+".mp4")
     
-    getGoodRandomFrame(cv2Video, "Is this image good for cropping?", mainWindow, cropAndWarm)
+    getGoodRandomFrame(cv2Video, "Is this image good for cropping?", mainWindow, getCroppingCoordinates)
 
-def cropAndWarm(frame, mainWindow):
+def getCroppingCoordinates(frame, mainWindow):
     moviePyVideo = VideoFileClip(mainWindow.fileName+".mp4")
     mainWindow.showCV2Image(frame)
     mainWindow.selectROI()
@@ -35,6 +35,8 @@ def cropAndWarm(frame, mainWindow):
     #     print("captured")
 
     # getHSVFrame(mainWindow)
+
+    #after we save new video, call next function from where we called getCroppingFrame
 
 def getHSVFrame(mainWindow):
     vs = cv2.VideoCapture(mainWindow.fileName+".mp4")

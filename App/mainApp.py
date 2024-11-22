@@ -1,11 +1,11 @@
 import sys
 
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QStyle, QGraphicsItem, QApplication, QMainWindow, QPushButton, QMenu, QAction, QFileDialog, QVBoxLayout, QWidget, QHBoxLayout, QLabel, QStackedLayout, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem, QGraphicsRectItem, QGraphicsEllipseItem
+from PyQt5.QtWidgets import QStyle, QGraphicsItem, QApplication, QMainWindow, QPushButton, QMenu, QAction, QFileDialog, QVBoxLayout, QWidget, QHBoxLayout, QLabel, QStackedLayout, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem, QGraphicsRectItem, QGraphicsEllipseItem, QShortcut
 from PyQt5.QtMultimediaWidgets import QVideoWidget, QGraphicsVideoItem
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtCore import QUrl, QRectF, QSizeF, QPointF
-from PyQt5.QtGui import QPixmap, QImage, QPen, QBrush
+from PyQt5.QtGui import QPixmap, QImage, QPen, QBrush, QKeySequence
 
 from main import * 
 
@@ -107,7 +107,17 @@ class MainWindow(QMainWindow):
         self.playButton.setEnabled(True)
     
     def selectROI(self):
-        self.scene.addItem(ResizableRectItem(0, 0, 100, 100, self.qGraphicsPixmap))
+        self.rectItem = ResizableRectItem(0, 0, 100, 100, self.qGraphicsPixmap)
+        self.scene.addItem(self.rectItem)
+
+    def keyPressEvent(self, event):
+        if hasattr(self, "rectItem") and event.key() == Qt.Key_Return and self.rectItem in self.scene.items():
+            print("hello")
+            x, y, w, h, imageWidth, imageHeight = self.rectItem.getCoordinates()
+            # remove retcItem from scene
+            cropVideoFromPyQt(x, y, w, h, self, imageWidth, imageHeight)
+            getHSVFrame(self)
+            
 
 
 class ResizableRectItem(QGraphicsRectItem):
@@ -193,46 +203,15 @@ class ResizableRectItem(QGraphicsRectItem):
             rect = self._constrain_to_pixmap(rect)
             self.setRect(rect)
             self._update_handle_positions()
-        else:
-            super().mouseMoveEvent(event)
-            rect = self.rect()
-            rect = self._constrain_to_pixmap(rect)
-            self.setRect(rect)
-
-            # pixmap_rect = self.pixmap_item.sceneBoundingRect()  # Pixmap's bounds in scene coordinates
-            # item_rect = self.sceneBoundingRect()  # This rectangle's bounds in scene coordinates
-            # print(pixmap_rect)
-            # print(item_rect)
-
-
-            # Calculate movement deltas
-            # delta = event.scenePos() - event.lastScenePos()
-            # new_pos = self.pos()  + delta
-            # print(delta)
-            # print(new_pos)
-
-            # # Constrain the new position
-            # if new_pos.x() < pixmap_rect.left():
-            #     delta.setX(pixmap_rect.left() - self.pos().x())
-            # elif new_pos.x() + item_rect.width() > pixmap_rect.right():
-            #     delta.setX(pixmap_rect.right() - (self.pos().x() + item_rect.width()))
-
-            # if new_pos.y() < pixmap_rect.top():
-            #     delta.setY(pixmap_rect.top() - self.pos().y())
-            # elif new_pos.y() + item_rect.height() > pixmap_rect.bottom():
-            #     delta.setY(pixmap_rect.bottom() - (self.pos().y() + item_rect.height()))
-
-            # # Move the item by the constrained delta
-            # self.moveBy(delta.x(), delta.y())
 
     def mouseReleaseEvent(self, event):
         """Deselect the handle when the mouse is released."""
         self.handle_selected = None
         super().mouseReleaseEvent(event)
 
-    # def keyPressEvent(self, event):
-    #     if event.key() == Qt.Key_Enter:
-    #         print("Enter key pressed")
+    def getCoordinates(self):
+        pixmap_rect = self.pixmap_item.boundingRect()
+        return self.boundingRect().x(), self.boundingRect().y(), self.boundingRect().width(), self.boundingRect().height(), pixmap_rect.width(), pixmap_rect.height()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv) # or [] if no cmd line args
