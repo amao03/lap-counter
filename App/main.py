@@ -22,21 +22,8 @@ def getCroppingFrame(video, mainWindow):
     getGoodRandomFrame(cv2Video, "Is this image good for cropping?", mainWindow, getCroppingCoordinates)
 
 def getCroppingCoordinates(frame, mainWindow):
-    moviePyVideo = VideoFileClip(mainWindow.fileName+".mp4")
     mainWindow.showCV2Image(frame)
     mainWindow.selectROI()
-    # cropVideo(moviePyVideo, frame, mainWindow.fileName)
-    # mainWindow.fileName = mainWindow.fileName + "-cropped"
-
-    # if not warm:
-    #     filter_video = warm_video(mainWindow.fileName+".mp4", (mainWindow.fileName+"-warmer.mp4"), 30)
-    #     print("done watmer")
-    #     mainWindow.fileName = mainWindow.fileName + "-warmer"
-    #     print("captured")
-
-    # getHSVFrame(mainWindow)
-
-    #after we save new video, call next function from where we called getCroppingFrame
 
 def getHSVFrame(mainWindow):
     vs = cv2.VideoCapture(mainWindow.fileName+".mp4")
