@@ -30,12 +30,13 @@ def getHSVFrame(mainWindow):
     getGoodRandomFrame(vs, "Can you see the cap well?", mainWindow, chooseCap)
 
 def chooseCap(frame, mainWindow):
-    print("cap")
-    greenLower, greenUpper = getHSVByUser(frame)
-    runCounter(mainWindow, greenLower, greenUpper)
+    # greenLower, greenUpper = getHSVByUser(frame)
+    mainWindow.showCV2Image(frame, True)
+    # print instructions to click
+    # runCounter(mainWindow, greenLower, greenUpper)
 
 def runCounter(mainWindow, greenLower, greenUpper):
-    vs = cv2.VideoCapture(mainWindow.fileName+".mp4")
+    vs = cv2.VideoCapture(mainWindow.fileName+"-cropped.mp4")
     
     pts = deque(maxlen=buffer)
     laps = 0

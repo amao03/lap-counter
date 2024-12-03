@@ -87,7 +87,7 @@ class MainWindow(QMainWindow):
         image = QPixmap(fileName)
         self.scene.addItem(QGraphicsPixmapItem(image))
 
-    def showCV2Image(self, image):
+    def showCV2Image(self, image, clickable=False):
         height, width, channel = image.shape
         bytesPerLine = 3 * width
         qImg = QImage(image.data, width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
@@ -95,7 +95,12 @@ class MainWindow(QMainWindow):
         pixmap = QPixmap.fromImage(qImg)
 
         self.scene.clear()
-        self.qGraphicsPixmap = QGraphicsPixmapItem(pixmap)
+
+        if clickable:
+            self.qGraphicsPixmap = ClickablePixmap(pixmap, self)
+        else:
+            self.qGraphicsPixmap = QGraphicsPixmapItem(pixmap)
+
         self.scene.addItem(self.qGraphicsPixmap)
 
     def showVideo(self, fileName):
@@ -112,7 +117,6 @@ class MainWindow(QMainWindow):
 
     def keyPressEvent(self, event):
         if hasattr(self, "rectItem") and event.key() == Qt.Key_Return and self.rectItem in self.scene.items():
-            print("hello")
             x, y, w, h, imageWidth, imageHeight = self.rectItem.getCoordinates()
             # remove retcItem from scene
             cropVideoFromPyQt(x, y, w, h, self, imageWidth, imageHeight)
@@ -212,6 +216,50 @@ class ResizableRectItem(QGraphicsRectItem):
     def getCoordinates(self):
         pixmap_rect = self.pixmap_item.boundingRect()
         return self.boundingRect().x(), self.boundingRect().y(), self.boundingRect().width(), self.boundingRect().height(), pixmap_rect.width(), pixmap_rect.height()
+
+class ClickablePixmap(QGraphicsPixmapItem):
+    def __init__(self, pixmap, mainWindow):
+        super().__init__(pixmap)
+        self.mainWindow = mainWindow
+
+    # def mousePressEvent(self, event):
+    #     print("mousepress")
+    #     item_pos = event.pos()
+    #     scene_pos = event.scenePos()
+
+    #     print("Item coordinates:", item_pos.x(), item_pos.y())
+    #     # print("Scene coordinates:", scene_pos.x(), scene_pos.y())
+
+    # def mouseMoveEvent(self, event):
+    #     if event.button == Qt.LeftButton:
+    #         print("Mouse moved while left button held:", event.pos())
+    
+    def mouseReleaseEvent(self, event):
+        print("mouse release")
+        item_pos = event.pos()
+        item_x = item_pos.x()
+        item_y = item_pos.y()
+
+        pixmapImage = self.pixmap().toImage()
+        width = pixmapImage.width()
+        height = pixmapImage.height()
+        channels = 4 if pixmapImage.hasAlphaChannel() else 3
+
+        # Extract the data in the QImage
+        buffer = pixmapImage.bits().asarray(width * height * channels)
+        array = np.frombuffer(buffer, dtype=np.uint8).reshape((height, width, channels))
+        print(len(array)) #height
+        print(len(array[0]) if len(array) > 0 else 0) #width
+        print(width)
+        print(height)
+        print(item_x)
+        print(item_y)
+
+        # cv2frame?
+        greenLower, greenUpper = get_hsv_value(array, int(item_x), int(item_y))
+        # call runcounter with greenLower and greenUpper
+        runCounter(self.mainWindow, greenLower, greenUpper)
+        
 
 if __name__ == '__main__':
     app = QApplication(sys.argv) # or [] if no cmd line args
