@@ -19,7 +19,7 @@ buffer = 32
 def getCroppingFrame(video, mainWindow):
     cv2Video = cv2.VideoCapture(video+".mp4")
     
-    getGoodRandomFrame(cv2Video, "Is this image good for cropping?", mainWindow, getCroppingCoordinates)
+    getGoodRandomFrame(cv2Video, "Is this image good for cropping? If yes, click 'enter' after cropping the image.", mainWindow, getCroppingCoordinates)
 
 def getCroppingCoordinates(frame, mainWindow):
     mainWindow.showCV2Image(frame)
@@ -27,12 +27,10 @@ def getCroppingCoordinates(frame, mainWindow):
 
 def getHSVFrame(mainWindow):
     vs = cv2.VideoCapture(mainWindow.fileName+"-cropped.mp4")
-    getGoodRandomFrame(vs, "Can you see the cap well?", mainWindow, chooseCap)
+    getGoodRandomFrame(vs, "Can you see the cap well? If yes, click on the cap.", mainWindow, chooseCap)
 
 def chooseCap(frame, mainWindow):
-    frame = imutils.resize(frame, width=1300)
     mainWindow.showCV2Image(frame, True)
-    # print instructions to click
 
 def runCounter(mainWindow, greenLower, greenUpper):
     vs = cv2.VideoCapture(mainWindow.fileName+"-cropped.mp4")
@@ -48,10 +46,6 @@ def runCounter(mainWindow, greenLower, greenUpper):
     time.sleep(2.0)
     while True:
         ret, frame = vs.read()
-        # frame = frame[1] if video == False else frame 
-        # if no video
-
-        # frame = frame[1]
 
         if frame is None:
             break

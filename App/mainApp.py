@@ -13,20 +13,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Lap Counter")
-        self.setFixedWidth(1500)
 
         layout = QHBoxLayout()
-        #leftPanel = QVBoxLayout()
         middlePanel = QVBoxLayout()
 
-        # define left panel
-        # self.setWindowTitle("Lap Counter")
-        # chooseFileButton = QPushButton("Choose Video")
-        # chooseFileButton.clicked.connect(self.openFileDialog)
-
-        # leftPanel.addWidget(chooseFileButton)
-
-        # define middle panel
         chooseFileButton = QPushButton("Choose Video")
         chooseFileButton.clicked.connect(self.openFileDialog)
 
@@ -39,20 +29,10 @@ class MainWindow(QMainWindow):
 
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.videoWidget = QGraphicsVideoItem()
-
-        # self.playButton = QPushButton()
-        # self.playButton.setEnabled(False)
-        # self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        # self.playButton.clicked.connect(self.play)
-        
-        # stackedLayout.addWidget(self.imageWidget)
-        # stackedLayout.addWidget(self.videoWidget)
         
         middlePanel.addWidget(chooseFileButton)
         middlePanel.addLayout(stackedLayout)
-        # middlePanel.addWidget(self.playButton)
 
-        #layout.addLayout(leftPanel)
         layout.addLayout(middlePanel)
 
         widget = QWidget()
@@ -60,11 +40,7 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(widget)
 
-        # set up media player
         self.mediaPlayer.setVideoOutput(self.videoWidget)
-        #self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
-       # self.mediaPlayer.positionChanged.connect(self.positionChanged)
-        #self.mediaPlayer.durationChanged.connect(self.durationChanged)
 
     def openFileDialog(self):
         options = QFileDialog.Options()
@@ -99,7 +75,6 @@ class MainWindow(QMainWindow):
 
         if clickable:
             self.qGraphicsPixmap = ClickablePixmap(pixmap, image, self)
-            # self.view.setMouseTracking(True)
         else:
             self.qGraphicsPixmap = QGraphicsPixmapItem(pixmap)
 
@@ -109,9 +84,6 @@ class MainWindow(QMainWindow):
         self.scene.clear()
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
         self.scene.addItem(self.videoWidget)
-
-        # probably get rid of this since the videos automatically play
-        # self.playButton.setEnabled(True)
     
     def selectROI(self):
         self.rectItem = ResizableRectItem(0, 0, 100, 100, self.qGraphicsPixmap)
