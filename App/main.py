@@ -277,3 +277,4 @@ def calculateLaps(video, mainWindow):
         vs.release()
     # close all windows
     cv2.destroyAllWindows()
+    
