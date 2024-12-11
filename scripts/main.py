@@ -74,11 +74,6 @@ ret, frame = vs.read()
 greenLower, greenUpper = getHSVByUser(frame)
 print(greenLower, greenUpper)
 
-# vs = cv2.VideoCapture("rtsp://admin:cse454hik@192.168.1.119:554/Streaming/channels/101")
-vs = cv2.VideoCapture(videoName+".mp4")
-# vs = cv2.VideoCapture("rtsp://admin:@192.168.1.117/Preview_01_main")
-# rtsp://admin:@192.168.1.117/Preview_01_main
-
 time.sleep(2.0)
 
 start_time = time.time()
