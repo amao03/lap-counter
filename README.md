@@ -1,6 +1,13 @@
 # Lap Counter
 ## Overview
 This project aims to create a lap counter to count the laps of a swimmer in the pool. This is a personal project with Dante Cannarozzi who is a recreational swimmer and WashU alum. 
+## Usage Instructions
+### mainApp.exe
+The easiest way to run the tracker with video is to run `mainApp.exe`. This is an executable file with our interface.
+### /App
+This folder has the code for our interface, which takes a user through tracking from a video. You can `cd` into this folder and run `python3 mainApp.py` to use the interface.
+### /scripts
+This folder is where we wrote our initial scripts without an interface to do video and live stream tracking. Now this folder is set up to do live stream tracking with our cameras and router.
 ## Project Requirements
 A minimum viable project will be able to accurately count how many laps someone swims in the pool from a video. We would also like to investigate some of these additional features depending on time: 
 <ol>
