@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QStyle, QGraphicsItem, QApplication, QMainWindow, QP
 from PyQt5.QtMultimediaWidgets import QVideoWidget, QGraphicsVideoItem
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtCore import QUrl, QRectF, QSizeF, QPointF
-from PyQt5.QtGui import QPixmap, QImage, QPen, QBrush, QKeySequence
+from PyQt5.QtGui import QPixmap, QImage, QPen, QBrush, QKeySequence, QColor
 
 from main import * 
 
@@ -13,6 +13,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Lap Counter")
+        self.setFixedWidth(1500)
 
         layout = QHBoxLayout()
         #leftPanel = QVBoxLayout()
@@ -39,17 +40,17 @@ class MainWindow(QMainWindow):
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.videoWidget = QGraphicsVideoItem()
 
-        self.playButton = QPushButton()
-        self.playButton.setEnabled(False)
-        self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        self.playButton.clicked.connect(self.play)
+        # self.playButton = QPushButton()
+        # self.playButton.setEnabled(False)
+        # self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        # self.playButton.clicked.connect(self.play)
         
         # stackedLayout.addWidget(self.imageWidget)
         # stackedLayout.addWidget(self.videoWidget)
         
         middlePanel.addWidget(chooseFileButton)
         middlePanel.addLayout(stackedLayout)
-        middlePanel.addWidget(self.playButton)
+        # middlePanel.addWidget(self.playButton)
 
         #layout.addLayout(leftPanel)
         layout.addLayout(middlePanel)
@@ -97,7 +98,8 @@ class MainWindow(QMainWindow):
         self.scene.clear()
 
         if clickable:
-            self.qGraphicsPixmap = ClickablePixmap(pixmap, self)
+            self.qGraphicsPixmap = ClickablePixmap(pixmap, image, self)
+            # self.view.setMouseTracking(True)
         else:
             self.qGraphicsPixmap = QGraphicsPixmapItem(pixmap)
 
@@ -109,7 +111,7 @@ class MainWindow(QMainWindow):
         self.scene.addItem(self.videoWidget)
 
         # probably get rid of this since the videos automatically play
-        self.playButton.setEnabled(True)
+        # self.playButton.setEnabled(True)
     
     def selectROI(self):
         self.rectItem = ResizableRectItem(0, 0, 100, 100, self.qGraphicsPixmap)
@@ -218,51 +220,34 @@ class ResizableRectItem(QGraphicsRectItem):
         return self.boundingRect().x(), self.boundingRect().y(), self.boundingRect().width(), self.boundingRect().height(), pixmap_rect.width(), pixmap_rect.height()
 
 class ClickablePixmap(QGraphicsPixmapItem):
-    def __init__(self, pixmap, mainWindow):
+    def __init__(self, pixmap, cv2Image, mainWindow):
         super().__init__(pixmap)
         self.mainWindow = mainWindow
+        self.cv2Image = cv2Image
 
-    # def mousePressEvent(self, event):
-    #     print("mousepress")
-    #     item_pos = event.pos()
-    #     scene_pos = event.scenePos()
 
-    #     print("Item coordinates:", item_pos.x(), item_pos.y())
-    #     # print("Scene coordinates:", scene_pos.x(), scene_pos.y())
 
-    # def mouseMoveEvent(self, event):
-    #     if event.button == Qt.LeftButton:
-    #         print("Mouse moved while left button held:", event.pos())
+    def mousePressEvent(self, event):
+        print("mousepress")
+        item_pos = event.pos()
+        scene_pos = event.scenePos()
+
+
     
     def mouseReleaseEvent(self, event):
         print("mouse release")
-        item_pos = event.pos()
+        scene_pos = event.pos()
+        item_pos = self.mapFromScene(scene_pos)
         item_x = item_pos.x()
         item_y = item_pos.y()
 
-        pixmapImage = self.pixmap().toImage()
-        width = pixmapImage.width()
-        height = pixmapImage.height()
-        channels = 4 if pixmapImage.hasAlphaChannel() else 3
-
-        # Extract the data in the QImage
-        buffer = pixmapImage.bits().asarray(width * height * channels)
-        array = np.frombuffer(buffer, dtype=np.uint8).reshape((height, width, channels))
-        print(len(array)) #height
-        print(len(array[0]) if len(array) > 0 else 0) #width
-        print(width)
-        print(height)
-        print(item_x)
-        print(item_y)
-
-        # cv2frame?
-        greenLower, greenUpper = get_hsv_value(array, int(item_x), int(item_y))
-        # call runcounter with greenLower and greenUpper
+        greenLower, greenUpper = get_hsv_value(self.cv2Image, int(item_x), int(item_y))
+        
         runCounter(self.mainWindow, greenLower, greenUpper)
         
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv) # or [] if no cmd line args
+    app = QApplication([])
     window = MainWindow()
     window.resize(800,800)
     window.show()

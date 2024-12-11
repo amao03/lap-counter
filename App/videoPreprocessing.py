@@ -53,9 +53,10 @@ def getHSVByUser(image):
 
 def get_hsv_value(image, x, y):
     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    # cv2.imshow(image)
     hsv_value = hsv_image[y, x]
 
-    lowerLimit = int(hsv_value[0]) - 10, 100, 100
+    lowerLimit = int(hsv_value[0]) - 10, 100, 0
     upperLimit = int(hsv_value[0]) + 10, 255, 255
 
     print("HSV value at pixel ({}, {}): {}".format(x, y, hsv_value))

@@ -26,14 +26,13 @@ def getCroppingCoordinates(frame, mainWindow):
     mainWindow.selectROI()
 
 def getHSVFrame(mainWindow):
-    vs = cv2.VideoCapture(mainWindow.fileName+".mp4")
+    vs = cv2.VideoCapture(mainWindow.fileName+"-cropped.mp4")
     getGoodRandomFrame(vs, "Can you see the cap well?", mainWindow, chooseCap)
 
 def chooseCap(frame, mainWindow):
-    # greenLower, greenUpper = getHSVByUser(frame)
+    frame = imutils.resize(frame, width=1300)
     mainWindow.showCV2Image(frame, True)
     # print instructions to click
-    # runCounter(mainWindow, greenLower, greenUpper)
 
 def runCounter(mainWindow, greenLower, greenUpper):
     vs = cv2.VideoCapture(mainWindow.fileName+"-cropped.mp4")
@@ -48,11 +47,11 @@ def runCounter(mainWindow, greenLower, greenUpper):
 
     time.sleep(2.0)
     while True:
-        frame = vs.read()
+        ret, frame = vs.read()
         # frame = frame[1] if video == False else frame 
         # if no video
 
-        frame = frame[1]
+        # frame = frame[1]
 
         if frame is None:
             break
